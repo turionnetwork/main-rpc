@@ -25,7 +25,7 @@ export default function AuthForm() {
   const [keepLoggedIn, setKeepLoggedIn] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!isLogin && (!acceptTerms || password !== rePassword)) {
@@ -60,8 +60,12 @@ export default function AuthForm() {
           setSuccessMessage("");
         }, 2500);
       }
-    } catch (err) {
-      alert((err as any).message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unexpected error occurred.");
+      }
     }
   };
 

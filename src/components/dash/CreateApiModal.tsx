@@ -43,10 +43,15 @@ export default function CreateApiModal() {
       });
       setApiUrl(apiEndpoint);
       setAlreadyCreated(true);
-    } catch (err) {
-      alert("Failed to create API. Try again later.");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("Failed to create API. Try again later.");
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (

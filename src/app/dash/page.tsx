@@ -6,9 +6,17 @@ import { doc, getDoc } from "firebase/firestore";
 import UserSummary from "@/components/dash/UserSummary";
 import DashboardActions from "@/components/dash/DashboardActions";
 
+interface UserData {
+  uid: string;
+  name: string;
+  email: string;
+  country: string;
+  vip: boolean;
+}
+
 export default function DashPage() {
   const router = useRouter();
-  const [userData, setUserData] = useState<any>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
@@ -18,14 +26,13 @@ export default function DashPage() {
         const userRef = doc(db, "users", firebaseUser.uid);
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
-          setUserData({ ...userSnap.data(), uid: firebaseUser.uid });
+          setUserData({ ...userSnap.data(), uid: firebaseUser.uid } as UserData);
         } else {
-          // fallback se o documento não existir
           setUserData({
             name: firebaseUser.displayName || "Unknown",
-            email: firebaseUser.email,
-            vip: false,
+            email: firebaseUser.email || "",
             country: "N/A",
+            vip: false,
             uid: firebaseUser.uid,
           });
         }
